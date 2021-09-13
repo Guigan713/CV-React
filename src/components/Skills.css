@@ -1,0 +1,17 @@
+
+.skills {
+    margin:var(--spacing-3) 0;
+  }
+  .skill {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .interests {
+    display: none;
+    align-items: center;  
+  }
+  .interests svg {
+    color: varr(--icon-color);
+    margin-right: 1rem;
+  }
