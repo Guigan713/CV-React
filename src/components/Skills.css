@@ -15,3 +15,7 @@
     color: varr(--icon-color);
     margin-right: 1rem;
   }
+
+  img {
+    margin-right: 1rem;
+  }
