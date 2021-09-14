@@ -31,10 +31,10 @@
 
   /* Fonts */
   --body-font: "Poppins", "Sans-serif";
-  --h1-font-size: 1.7rem;
-  --h2-font-size: 1.3rem;
-  --h3-font-size: 1.1rem;
-  --h4-font-size: 1rem;
+  --h1-font-size: 1.5rem;
+  --h2-font-size: 1.2rem;
+  --h3-font-size: 1rem;
+  --h4-font-size: 0.8rem;
 
   /* Helpers */
   --spacing-1: .4rem;
@@ -57,7 +57,7 @@ body {
 
 h1, h2, h3 {
   margin-bottom: var(--spacing-1);
-  font-weight: 400;    
+  font-weight: 300;    
   color: var(--title-color);
 }
 
@@ -73,15 +73,15 @@ h1 {
 h2 {
   display: flex;
   align-items: center;  
-  margin-bottom: var(--spacing-4);
-  font-size: var(--h2-font-size);
+  margin-bottom: var(--spacing-3);
+  font-size: var(--h3-font-size);
   letter-spacing: 4px;
   text-transform: uppercase;
 }
 
 
 h3 {
-  font-size: var(--h3-font-size);
+  font-size: var(--h4-font-size);
 }
 
 
@@ -185,8 +185,8 @@ button {
 
 .circle {
   display: inline-block;
-  width:20px;
-  height: 20px;
+  width:15px;
+  height: 15px;
   margin-right: 8px;
   border-radius: 50%;
   background:var(--circle-color);

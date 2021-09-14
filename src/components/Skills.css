@@ -19,3 +19,12 @@
   img {
     margin-right: 1rem;
   }
+
+  .skill__label {
+    font-size: var(--h4-font-size);
+  }
+
+
+  .h2 {
+    margin:var(--spacing-2)
+  }

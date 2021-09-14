@@ -5,20 +5,23 @@
 
 .user__avatar {
     border-radius: 50%;
-    width: 250px;
-    height: 250px;
+    width: 200px;
+    height: 200px;
 }
 
 .user__infos  {
     text-align: left;
     padding: var(--spacing-3) 0 var(--spacing-1) 0;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .user__info {
     display: flex;
+    margin:var(--spacing-2);
 }
 
 .user__info svg {
-    color: varr(--icon-color);
+    color: var(--body-bg-color);
     margin-right: 1rem;
 }
