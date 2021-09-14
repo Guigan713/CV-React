@@ -12,7 +12,7 @@
   --body-bg-color: #FFFFFF;
   --sidebar-bg-color: #313638;
   --text-color: #000;
-  --title-color: #e14631;
+  --title-color: #c0deeb;
   --date-color: #1f94c2;
   --dark-body-bg-color: #242424;
   --dark-sidebar-bg-color: #171717;
@@ -165,7 +165,7 @@ button {
   display: block;
   width: 100%;
   height: 120px;
-  background-color: #e14631;
+  background-color: #c0deeb;
   clip-path: polygon(0 0, 100% 1%, 100% 100%, 75% 86%, 25% 86%, 0 100%);
 }
  
