@@ -26,6 +26,8 @@ function Skills() {
         <Skill title="NPM"rating="4" /> 
         {/* <img align="left" alt="Git" src="https://shields.io/badge/-Git-F05032?&logo=Git&logoColor=white&style=plastic" />
         <Skill title="GIT"rating="4" />  */}
+        <img align="left" alt="Postman" src="https://shields.io/badge/-Postman-FF6C37?&logo=Postman&logoColor=white&style=plastic" />
+        <Skill title="Postman"rating="4" />
 
       </div>
       <div className="skills">
