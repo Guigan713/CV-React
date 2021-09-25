@@ -28,6 +28,8 @@ function Skills() {
         <Skill title="GIT"rating="4" />  */}
         <img align="left" alt="Postman" src="https://shields.io/badge/-Postman-FF6C37?&logo=Postman&logoColor=white&style=plastic" />
         <Skill title="Postman"rating="4" />
+        <img align="left" alt="Express" src="https://shields.io/badge/-Express-000000?&logo=Express&logoColor=white&style=plastic" />
+        <Skill title="Express"rating="3" />
 
       </div>
       <div className="skills">
