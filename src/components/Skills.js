@@ -30,6 +30,10 @@ function Skills() {
         <Skill title="Postman"rating="4" />
         <img align="left" alt="Express" src="https://shields.io/badge/-Express-000000?&logo=Express&logoColor=white&style=plastic" />
         <Skill title="Express"rating="3" />
+        <img align="left" alt="C#" src="https://shields.io/badge/-C%20Sharp-239120?&logo=C%20Sharp&logoColor=white&style=plastic" />
+        <Skill title="C#"rating="1" />
+        <img align="left" alt="Unity" src="https://shields.io/badge/-Unity-000000?&logo=Unity&logoColor=white&style=plastic" />
+        <Skill title="Unity"rating="1" />
 
       </div>
       <div className="skills">
