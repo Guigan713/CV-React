@@ -24,8 +24,8 @@ function Skills() {
         <Skill title="MYSQL" rating="4" />
         <img align="left" alt="npm" src="https://shields.io/badge/-npm-CB3837?&logo=npm&logoColor=white&style=plastic" />
         <Skill title="NPM"rating="4" /> 
-        {/* <img align="left" alt="Git" src="https://shields.io/badge/-Git-F05032?&logo=Git&logoColor=white&style=plastic" />
-        <Skill title="GIT"rating="4" />  */}
+        <img align="left" alt="Terraform" src="https://shields.io/badge/-Terraform-7B42BC?&logo=Terraform&logoColor=white&style=plastic" />
+        <Skill title="Terraform"rating="3" /> 
         <img align="left" alt="Postman" src="https://shields.io/badge/-Postman-FF6C37?&logo=Postman&logoColor=white&style=plastic" />
         <Skill title="Postman"rating="4" />
         <img align="left" alt="Express" src="https://shields.io/badge/-Express-000000?&logo=Express&logoColor=white&style=plastic" />
@@ -34,6 +34,14 @@ function Skills() {
         <Skill title="C#"rating="1" />
         <img align="left" alt="Unity" src="https://shields.io/badge/-Unity-000000?&logo=Unity&logoColor=white&style=plastic" />
         <Skill title="Unity"rating="1" />
+        <img align="left" alt="Wordpress" src="https://shields.io/badge/-Wordpress-21759B?&logo=Wordpress&logoColor=white&style=plastic" />
+        <Skill title="Wordpress" rating="4" />
+        <img align="left" alt="Linux" src="https://shields.io/badge/-Linux-FCC624?&logo=Linux&logoColor=white&style=plastic" />
+        <Skill title="Linux" rating="3" />
+        <img align="left" alt="Ansible" src="https://shields.io/badge/-Ansible-EE0000?&logo=Ansible&logoColor=white&style=plastic" />
+        <Skill title="Ansible" rating="1" />
+        <img align="left" alt="Python" src="https://shields.io/badge/-Python-3776AB?&logo=Python&logoColor=white&style=plastic" />
+        <Skill title="Python" rating="1" />
 
       </div>
       <div className="skills">

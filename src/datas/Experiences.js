@@ -1,6 +1,27 @@
 export const dataExperiences = [
     {
         id: 1,
+        title: "Développeur web / Devops",
+        date: "08/11/2021 - 02/02/2022",
+        location: "Op-Rate - (remote)",
+        text: "",
+        missions: [
+            {
+                id: 1,
+                title: "refonte du Website corporate via Wordpress"
+            },
+            {
+                id: 2,
+                title: "découverte du métier de Devops"
+            },
+            {
+                id: 3,
+                title: "Création d'une instance de VM sur Google Cloud Platform via Terraform"
+            }
+        ]
+    },
+    {
+        id: 2,
         title: "Développeur web - Full stack",
         date: "01/06/2021 - 05/11/2021",
         location: "Wild code school - (Remote)",
@@ -21,7 +42,7 @@ export const dataExperiences = [
         ],
     },
     {
-        id: 2,
+        id: 3,
         title: "Confectionneur - Coupeur",
         date: "10/09/2018 - 27/05/2021",
         location: "Michelin - Blanzy (71)",
@@ -42,7 +63,7 @@ export const dataExperiences = [
         ],
     },
     {
-        id: 2,
+        id: 4,
         title: "Réceptionniste Polyvalent",
         date: "2014 - 2018",
         location: "Hotel Ibis Styles - Beaune (21)",
