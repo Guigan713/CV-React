@@ -28,3 +28,15 @@
   .h2 {
     margin:var(--spacing-2)
   }
+
+  .interests  {
+    text-align: left;
+    padding: var(--spacing-1) 0 var(--spacing-1) 0;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .interest {
+      display: flex;
+      margin:var(--spacing-1);
+  }

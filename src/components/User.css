@@ -18,7 +18,7 @@
 
 .user__info {
     display: flex;
-    margin:var(--spacing-2);
+    margin:var(--spacing-1);
 }
 
 .user__info svg {

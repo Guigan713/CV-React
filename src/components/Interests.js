@@ -4,14 +4,14 @@ function Interests() {
     return (
         <div className="skills">
             <h2 className="h2">Centres d'intérêts</h2>
-            <div className="user__infos">
-                <p className="user__info">🖥️  Informatique</p>
-                <p className="user__info">📷  Photo</p>
-                <p className="user__info">🎹  Musique</p>
-                <p className="user__info">👟  Sneakers</p>
-                <p className="user__info">👖  vêtements</p>
-                <p className="user__info">🏆  Sports</p>
-                <p className="user__info">✈️   Voyages</p>
+            <div className="interests">
+                <p className="interest">🖥️  Informatique</p>
+                <p className="interest">📷  Photo</p>
+                <p className="interest">🎹  Musique</p>
+                <p className="interest">👟  Sneakers</p>
+                <p className="interest">👖  vêtements</p>
+                <p className="interest">🏆  Sports</p>
+                <p className="interest">✈️   Voyages</p>
             </div>
         </div>
     )
