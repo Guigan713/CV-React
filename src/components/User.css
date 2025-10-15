@@ -1,27 +1,41 @@
 .user {
     position: relative;
     text-align: center;
+    margin-bottom: var(--spacing-3);
 }
 
 .user__avatar {
     border-radius: 50%;
-    width: 200px;
-    height: 200px;
+    width: 130px;
+    height: 130px;
+    margin-bottom: var(--spacing-1);
+}
+
+.user__name {
+    margin-bottom: var(--spacing-1);
+}
+
+.user__profession {
+    margin-bottom: var(--spacing-3);
 }
 
 .user__infos  {
     text-align: left;
-    padding: var(--spacing-3) 0 var(--spacing-1) 0;
-    display: flex;
-    flex-wrap: wrap;
+    padding: var(--spacing-2) 0;
 }
 
 .user__info {
     display: flex;
-    margin:var(--spacing-2);
+    align-items: center;
+    margin-bottom: var(--spacing-2);
 }
 
 .user__info svg {
     color: var(--body-bg-color);
-    margin-right: 1rem;
+    margin-right: var(--spacing-2);
+    min-width: 24px;
+}
+
+.user__info a {
+    word-break: break-word;
 }

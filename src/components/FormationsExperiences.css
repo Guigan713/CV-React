@@ -1,16 +1,78 @@
+.cursus {
+    margin-bottom: var(--spacing-1);
+}
+
+.cursus h2 {
+    margin-left: 0;
+    padding-left: 0;
+    margin-bottom: var(--spacing-1);
+}
+
 .grid__item {
     margin-bottom: var(--spacing-1);
 }
 
+.grid__item:last-child {
+    margin-bottom: 0;
+}
+
 .grid__date {
-    font-weight: 500;
+    font-weight: 400;
+    font-size: 0.65rem;
+    color: var(--date-color);
+}
+
+.dark .grid__date {
+    color: var(--dark-date-color);
 }
 
 .grid__title {
-    margin-bottom: 0;
+    margin-bottom: var(--spacing-1);
+    font-size: 0.85rem;
+    font-weight: 500;
 }
 
 .grid__location {
     font-weight: 300;
+    font-size: 0.7rem;
     color: var(--date-color);
+}
+
+.dark .grid__location {
+    color: var(--dark-date-color);
+}
+
+.grid__text {
+    font-size: 0.7rem;
+}
+
+.grid__missions li {
+    font-size: 0.7rem;
+}
+
+/* Certifications */
+.certification-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1);
+    margin-bottom: var(--spacing-1);
+}
+
+.certification-bullet {
+    width: 6px;
+    height: 6px;
+    min-width: 6px;
+    border-radius: 50%;
+    background-color: var(--circle-color-plain);
+}
+
+.dark .certification-bullet {
+    background-color: var(--dark-circle-color-plain);
+}
+
+.certification-title {
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 400;
+    line-height: 1.3;
 }
