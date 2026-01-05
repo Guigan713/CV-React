@@ -1,0 +1,71 @@
+# ============================================================================
+# INGRESS - Traefik IngressRoute
+# ============================================================================
+# Route le trafic externe vers les services internes
+# Traefik est pré-installé avec k3s
+# ============================================================================
+
+---
+# --------------------------------------------------------------------------
+# IngressRoute - Routage principal
+# --------------------------------------------------------------------------
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: cv-react-ingress
+  namespace: cv-react
+  labels:
+    app: cv-react
+spec:
+  entryPoints:
+    - web       # Port 80
+    - websecure # Port 443
+  routes:
+    # --------------------------------------------------------------------------
+    # Route API Backend : /api/* → backend:5000
+    # --------------------------------------------------------------------------
+    - match: PathPrefix(`/api`)
+      kind: Rule
+      services:
+        - name: backend
+          port: 5000
+      middlewares:
+        - name: api-stripprefix
+
+    # --------------------------------------------------------------------------
+    # Route Frontend : /* → frontend:80
+    # --------------------------------------------------------------------------
+    - match: PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: frontend
+          port: 80
+
+---
+# --------------------------------------------------------------------------
+# Middleware - Strip /api prefix (optionnel selon config backend)
+# --------------------------------------------------------------------------
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: api-stripprefix
+  namespace: cv-react
+spec:
+  stripPrefix:
+    prefixes:
+      - /api
+    forceSlash: false
+
+---
+# --------------------------------------------------------------------------
+# IngressRoute HTTP → HTTPS Redirect (optionnel)
+# --------------------------------------------------------------------------
+# apiVersion: traefik.io/v1alpha1
+# kind: Middleware
+# metadata:
+#   name: redirect-https
+#   namespace: cv-react
+# spec:
+#   redirectScheme:
+#     scheme: https
+#     permanent: true

@@ -1,0 +1,17 @@
+{
+  "name": "CV React",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    },
+    "ghcr.io/devcontainers-extra/features/ansible:2": {}
+  },
+  "mounts": [
+        "source=${localEnv:USERPROFILE}/.ssh,target=/home/.ssh,type=bind,consistency=cached",
+        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+    ],
+//   "workspaceFolder": "/workspace",
+  "postCreateCommand": "npm install",
+  "forwardPorts": [3000]
+}

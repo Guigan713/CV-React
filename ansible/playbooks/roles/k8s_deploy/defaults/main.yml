@@ -1,0 +1,49 @@
+---
+# ============================================================================
+# VARIABLES PAR DÉFAUT - ROLE K8S_DEPLOY
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# Application
+# --------------------------------------------------------------------------
+app_name: cv-react
+app_namespace: cv-react
+
+# --------------------------------------------------------------------------
+# Images Docker
+# --------------------------------------------------------------------------
+# Registry Docker (laisser vide pour Docker Hub)
+docker_registry: ""
+# Tag des images
+image_tag: "latest"
+
+# Images
+frontend_image: "{{ docker_registry }}cv-react-frontend:{{ image_tag }}"
+backend_image: "{{ docker_registry }}cv-react-backend:{{ image_tag }}"
+postgres_image: "postgres:16-alpine"
+
+# --------------------------------------------------------------------------
+# Replicas
+# --------------------------------------------------------------------------
+frontend_replicas: 2
+backend_replicas: 2
+
+# --------------------------------------------------------------------------
+# Base de données
+# --------------------------------------------------------------------------
+db_name: cv_db
+db_host: postgres
+db_port: "5432"
+
+# --------------------------------------------------------------------------
+# Chemins
+# --------------------------------------------------------------------------
+# Chemin local des manifests Kubernetes
+k8s_manifests_path: "{{ playbook_dir }}/../../kubernetes/base"
+# Chemin sur le master où copier les manifests
+k8s_remote_path: "/tmp/cv-react-k8s"
+
+# --------------------------------------------------------------------------
+# Kubeconfig
+# --------------------------------------------------------------------------
+kubeconfig_path: "/etc/rancher/k3s/k3s.yaml"

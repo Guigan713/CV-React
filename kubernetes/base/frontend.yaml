@@ -1,0 +1,79 @@
+# ============================================================================
+# FRONTEND - Deployment + Service
+# ============================================================================
+# Application React servie par Nginx
+# ============================================================================
+
+---
+# --------------------------------------------------------------------------
+# Deployment - Frontend
+# --------------------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: cv-react
+  labels:
+    app: cv-react
+    component: frontend
+spec:
+  replicas: 2  # Haute disponibilité
+  selector:
+    matchLabels:
+      app: cv-react
+      component: frontend
+  template:
+    metadata:
+      labels:
+        app: cv-react
+        component: frontend
+    spec:
+      containers:
+        - name: frontend
+          # Image à remplacer par votre registry
+          image: cv-react-frontend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "25m"
+            limits:
+              memory: "64Mi"
+              cpu: "100m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+---
+# --------------------------------------------------------------------------
+# Service - Frontend (ClusterIP)
+# --------------------------------------------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: cv-react
+  labels:
+    app: cv-react
+    component: frontend
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      name: http
+  selector:
+    app: cv-react
+    component: frontend

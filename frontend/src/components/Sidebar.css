@@ -1,0 +1,131 @@
+.sidebar-content {
+    color: #333;
+}
+
+.sidebar-section {
+    margin-bottom: var(--spacing-4);
+}
+
+.sidebar-title {
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--accent-color);
+    margin-bottom: var(--spacing-3);
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--accent-color);
+}
+
+.sidebar-subtitle {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: var(--spacing-2);
+    margin-top: var(--spacing-2);
+}
+
+.dark .sidebar-subtitle {
+    color: #fff;
+}
+
+.competences-list {
+    list-style: disc;
+    padding-left: 1.2rem;
+    font-size: 0.68rem;
+    line-height: 1.5;
+}
+
+.competences-list li {
+    margin-bottom: 0.2rem;
+}
+
+.competences-list li.sub-item {
+    list-style: none;
+    margin-left: -0.5rem;
+}
+
+/* Soft Skills & Langues row */
+.sidebar-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: var(--spacing-4);
+}
+
+.sidebar-half {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.soft-skills-list,
+.langues-list {
+    list-style: disc;
+    padding-left: 1rem;
+    font-size: 0.68rem;
+}
+
+.soft-skills-list li,
+.langues-list li {
+    margin-bottom: 0.15rem;
+}
+
+/* Stack Technique */
+.stack-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem;
+}
+
+.stack-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.stack-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    margin-bottom: 0.2rem;
+    transition: transform 0.2s;
+}
+
+.stack-icon:hover {
+    transform: scale(1.15);
+}
+
+.stack-name {
+    font-size: 0.55rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.dark .stack-name {
+    color: #ccc;
+}
+
+/* Projets Perso */
+.projets-perso {
+    text-align: center;
+}
+
+.qr-code {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 0.3rem;
+}
+
+.portfolio-text {
+    font-size: 0.75rem;
+    font-style: italic;
+    color: #666;
+}
+
+.dark .portfolio-text {
+    color: #aaa;
+}
+
+.dark .sidebar-content {
+    color: #e8e8e8;
+}

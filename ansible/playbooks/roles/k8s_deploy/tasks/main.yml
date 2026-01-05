@@ -1,0 +1,206 @@
+---
+# ============================================================================
+# ROLE K8S_DEPLOY - Déploiement de cv-react sur Kubernetes
+# ============================================================================
+#
+# Ce role :
+# 1. Copie les manifests Kubernetes sur le master
+# 2. Crée le namespace
+# 3. Applique les ConfigMaps et Secrets
+# 4. Déploie PostgreSQL, Backend et Frontend
+# 5. Configure l'Ingress Traefik
+#
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# SECTION 1 : Vérification des prérequis
+# --------------------------------------------------------------------------
+
+- name: Vérifier que kubectl est disponible
+  command: kubectl version --client
+  register: kubectl_version
+  changed_when: false
+  failed_when: kubectl_version.rc != 0
+
+- name: Vérifier la connexion au cluster
+  command: kubectl get nodes
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  register: cluster_nodes
+  changed_when: false
+  become: yes
+
+- name: Afficher les nœuds du cluster
+  debug:
+    msg: "{{ cluster_nodes.stdout_lines }}"
+
+# --------------------------------------------------------------------------
+# SECTION 2 : Préparation des manifests
+# --------------------------------------------------------------------------
+
+- name: Créer le répertoire de déploiement
+  file:
+    path: "{{ k8s_remote_path }}"
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: Copier les manifests Kubernetes
+  copy:
+    src: "{{ k8s_manifests_path }}/"
+    dest: "{{ k8s_remote_path }}/"
+    mode: '0644'
+  become: yes
+
+# --------------------------------------------------------------------------
+# SECTION 3 : Mise à jour des images dans les manifests
+# --------------------------------------------------------------------------
+
+- name: Mettre à jour l'image frontend dans le manifest
+  replace:
+    path: "{{ k8s_remote_path }}/frontend.yaml"
+    regexp: 'image: cv-react-frontend:latest'
+    replace: 'image: {{ frontend_image }}'
+  become: yes
+
+- name: Mettre à jour l'image backend dans le manifest
+  replace:
+    path: "{{ k8s_remote_path }}/backend.yaml"
+    regexp: 'image: cv-react-backend:latest'
+    replace: 'image: {{ backend_image }}'
+  become: yes
+
+# --------------------------------------------------------------------------
+# SECTION 4 : Déploiement Kubernetes
+# --------------------------------------------------------------------------
+
+- name: Créer le namespace
+  command: kubectl apply -f {{ k8s_remote_path }}/namespace.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  become: yes
+  register: namespace_result
+  changed_when: "'created' in namespace_result.stdout or 'configured' in namespace_result.stdout"
+
+- name: Appliquer les ConfigMaps
+  command: kubectl apply -f {{ k8s_remote_path }}/configmap.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  become: yes
+  register: configmap_result
+  changed_when: "'created' in configmap_result.stdout or 'configured' in configmap_result.stdout"
+
+- name: Appliquer les Secrets
+  command: kubectl apply -f {{ k8s_remote_path }}/secrets.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  become: yes
+  register: secrets_result
+  changed_when: "'created' in secrets_result.stdout or 'configured' in secrets_result.stdout"
+
+- name: Appliquer les scripts d'init PostgreSQL
+  command: kubectl apply -f {{ k8s_remote_path }}/postgres-init.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  become: yes
+  register: postgres_init_result
+  changed_when: "'created' in postgres_init_result.stdout or 'configured' in postgres_init_result.stdout"
+
+- name: Déployer PostgreSQL
+  command: kubectl apply -f {{ k8s_remote_path }}/postgres.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  become: yes
+  register: postgres_result
+  changed_when: "'created' in postgres_result.stdout or 'configured' in postgres_result.stdout"
+
+- name: Attendre que PostgreSQL soit prêt
+  command: >
+    kubectl wait --for=condition=ready pod
+    -l app=cv-react,component=postgres
+    -n {{ app_namespace }}
+    --timeout=120s
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  become: yes
+  register: postgres_ready
+  retries: 3
+  delay: 10
+  until: postgres_ready.rc == 0
+
+- name: Déployer le Backend
+  command: kubectl apply -f {{ k8s_remote_path }}/backend.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  become: yes
+  register: backend_result
+  changed_when: "'created' in backend_result.stdout or 'configured' in backend_result.stdout"
+
+- name: Déployer le Frontend
+  command: kubectl apply -f {{ k8s_remote_path }}/frontend.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  become: yes
+  register: frontend_result
+  changed_when: "'created' in frontend_result.stdout or 'configured' in frontend_result.stdout"
+
+- name: Configurer l'Ingress Traefik
+  command: kubectl apply -f {{ k8s_remote_path }}/ingress.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  become: yes
+  register: ingress_result
+  changed_when: "'created' in ingress_result.stdout or 'configured' in ingress_result.stdout"
+
+# --------------------------------------------------------------------------
+# SECTION 5 : Vérification du déploiement
+# --------------------------------------------------------------------------
+
+- name: Attendre que tous les pods soient prêts
+  command: >
+    kubectl wait --for=condition=ready pod
+    -l app=cv-react
+    -n {{ app_namespace }}
+    --timeout=180s
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  become: yes
+  register: all_pods_ready
+  retries: 3
+  delay: 15
+  until: all_pods_ready.rc == 0
+
+- name: Récupérer l'état des pods
+  command: kubectl get pods -n {{ app_namespace }} -o wide
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  become: yes
+  register: pods_status
+  changed_when: false
+
+- name: Afficher l'état des pods
+  debug:
+    msg: "{{ pods_status.stdout_lines }}"
+
+- name: Récupérer l'état des services
+  command: kubectl get svc -n {{ app_namespace }}
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  become: yes
+  register: svc_status
+  changed_when: false
+
+- name: Afficher l'état des services
+  debug:
+    msg: "{{ svc_status.stdout_lines }}"
+
+- name: Afficher les informations d'accès
+  debug:
+    msg:
+      - "============================================"
+      - "🚀 Déploiement cv-react terminé !"
+      - "============================================"
+      - "Namespace: {{ app_namespace }}"
+      - "Frontend: http://{{ hostvars[groups['masters'][0]]['ansible_host'] }}"
+      - "API: http://{{ hostvars[groups['masters'][0]]['ansible_host'] }}/api"
+      - "============================================"

@@ -1,0 +1,65 @@
+---
+# ============================================================================
+# VARIABLES PAR DÉFAUT - ROLE SYSTEM_SETUP
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# Configuration SSH
+# --------------------------------------------------------------------------
+ssh_user: Guillaume
+ssh_allow_password: true
+# ssh_public_key: "ssh-rsa AAAA..." # À définir dans l'inventaire ou group_vars
+
+# --------------------------------------------------------------------------
+# Réseau - Subnet pour le cluster k3s (VirtualBox host-only)
+# --------------------------------------------------------------------------
+cluster_subnet: "192.168.56.0/24"
+
+# --------------------------------------------------------------------------
+# Paquets à installer sur tous les nœuds
+# --------------------------------------------------------------------------
+common_packages:
+  - curl
+  - wget
+  - htop
+  - vim
+  - git
+  - ufw
+  - ca-certificates
+  - gnupg
+  - lsb-release
+  - apt-transport-https
+  - net-tools
+  - jq
+
+# --------------------------------------------------------------------------
+# Ports Firewall - K3s Master
+# --------------------------------------------------------------------------
+k3s_master_ports:
+  - { rule: "allow", port: "22", comment: "SSH" }
+  - { rule: "allow", port: "6443", comment: "K8s API Server" }
+  - { rule: "allow", port: "2379:2380", proto: "tcp", src: "{{ cluster_subnet }}", comment: "etcd client/peer" }
+  - { rule: "allow", port: "10250", src: "{{ cluster_subnet }}", comment: "Kubelet API" }
+  - { rule: "allow", port: "10251", src: "{{ cluster_subnet }}", comment: "kube-scheduler" }
+  - { rule: "allow", port: "10252", src: "{{ cluster_subnet }}", comment: "kube-controller-manager" }
+  - { rule: "allow", port: "8472", proto: "udp", src: "{{ cluster_subnet }}", comment: "Flannel VXLAN" }
+  - { rule: "allow", port: "51820", proto: "udp", src: "{{ cluster_subnet }}", comment: "Flannel Wireguard" }
+  - { rule: "allow", port: "80", comment: "HTTP Traefik" }
+  - { rule: "allow", port: "443", comment: "HTTPS Traefik" }
+
+# --------------------------------------------------------------------------
+# Ports Firewall - K3s Worker
+# --------------------------------------------------------------------------
+k3s_worker_ports:
+  - { rule: "allow", port: "22", comment: "SSH" }
+  - { rule: "allow", port: "10250", src: "{{ cluster_subnet }}", comment: "Kubelet API" }
+  - { rule: "allow", port: "8472", proto: "udp", src: "{{ cluster_subnet }}", comment: "Flannel VXLAN" }
+  - { rule: "allow", port: "51820", proto: "udp", src: "{{ cluster_subnet }}", comment: "Flannel Wireguard" }
+  - { rule: "allow", port: "30000:32767", comment: "NodePort Services" }
+
+# --------------------------------------------------------------------------
+# Ports Firewall - Bastion
+# --------------------------------------------------------------------------
+bastion_ports:
+  - { rule: "allow", port: "22", comment: "SSH" }
+  - { rule: "allow", port: "53", comment: "DNS" }

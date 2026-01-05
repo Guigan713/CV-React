@@ -1,0 +1,52 @@
+---
+# ============================================================================
+# PLAYBOOK PRINCIPAL - Déploiement K3s sur cluster Vagrant
+# ============================================================================
+#
+# Usage:
+#   ansible-playbook playbooks/playbook.yml
+#   ansible-playbook playbooks/playbook.yml --tags "setup"
+#   ansible-playbook playbooks/playbook.yml --tags "k3s"
+#   ansible-playbook playbooks/playbook.yml --tags "deploy"
+#
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# PHASE 1 : Configuration système de base (tous les nœuds)
+# --------------------------------------------------------------------------
+- name: Configuration système de base
+  hosts: all_nodes
+  gather_facts: yes
+  tags: [setup, system]
+  roles:
+    - system_setup
+
+# --------------------------------------------------------------------------
+# PHASE 2 : Installation K3s Master
+# --------------------------------------------------------------------------
+- name: Installation K3s Master
+  hosts: masters
+  gather_facts: yes
+  tags: [k3s, master]
+  roles:
+    - k3s
+
+# --------------------------------------------------------------------------
+# PHASE 3 : Installation K3s Workers
+# --------------------------------------------------------------------------
+- name: Installation K3s Workers
+  hosts: workers
+  gather_facts: yes
+  tags: [k3s, workers]
+  roles:
+    - k3s
+
+# --------------------------------------------------------------------------
+# PHASE 4 : Déploiement de l'application cv-react
+# --------------------------------------------------------------------------
+- name: Déploiement cv-react sur Kubernetes
+  hosts: masters
+  gather_facts: yes
+  tags: [deploy, app]
+  roles:
+    - k8s_deploy

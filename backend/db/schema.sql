@@ -1,0 +1,104 @@
+-- Création de la base de données
+-- CREATE DATABASE cv_db;
+
+-- Table utilisateur
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    profession VARCHAR(100),
+    avatar VARCHAR(255),
+    address VARCHAR(255),
+    phone VARCHAR(20),
+    email VARCHAR(100),
+    github VARCHAR(255),
+    gitlab VARCHAR(255),
+    linkedin VARCHAR(255),
+    permis_b BOOLEAN DEFAULT false
+);
+
+-- Table profil
+CREATE TABLE IF NOT EXISTS profil (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(100),
+    description TEXT
+);
+
+-- Table catégories de compétences
+CREATE TABLE IF NOT EXISTS skill_categories (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+-- Table compétences
+CREATE TABLE IF NOT EXISTS skills (
+    id SERIAL PRIMARY KEY,
+    category_id INTEGER REFERENCES skill_categories(id),
+    title VARCHAR(100) NOT NULL,
+    img VARCHAR(255)
+);
+
+-- Table expériences
+CREATE TABLE IF NOT EXISTS experiences (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(150) NOT NULL,
+    date VARCHAR(50),
+    location VARCHAR(150)
+);
+
+-- Table missions (liées aux expériences)
+CREATE TABLE IF NOT EXISTS missions (
+    id SERIAL PRIMARY KEY,
+    experience_id INTEGER REFERENCES experiences(id),
+    title VARCHAR(255) NOT NULL
+);
+
+-- Table formations
+CREATE TABLE IF NOT EXISTS formations (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(150) NOT NULL,
+    date VARCHAR(50),
+    location VARCHAR(150)
+);
+
+-- Table certifications
+CREATE TABLE IF NOT EXISTS certifications (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(150) NOT NULL
+);
+
+-- Table langues
+CREATE TABLE IF NOT EXISTS languages (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    rating INTEGER CHECK (rating >= 1 AND rating <= 5)
+);
+
+-- Table projets personnels
+CREATE TABLE IF NOT EXISTS projects (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    description TEXT
+);
+
+-- Table soft skills
+CREATE TABLE IF NOT EXISTS soft_skills (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+-- Table compétences textuelles (liste à puces)
+CREATE TABLE IF NOT EXISTS competences (
+    id SERIAL PRIMARY KEY,
+    category VARCHAR(100) NOT NULL,
+    description TEXT NOT NULL,
+    is_sub_item BOOLEAN DEFAULT false,
+    sort_order INTEGER DEFAULT 0
+);
+
+-- Table stack technique (icônes)
+CREATE TABLE IF NOT EXISTS stack_tech (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    icon_url VARCHAR(500) NOT NULL,
+    sort_order INTEGER DEFAULT 0
+);

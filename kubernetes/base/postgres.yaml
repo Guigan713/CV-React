@@ -1,0 +1,137 @@
+# ============================================================================
+# POSTGRESQL - StatefulSet + Service
+# ============================================================================
+# StatefulSet pour garantir la persistance des données
+# PersistentVolumeClaim pour le stockage
+# ============================================================================
+
+---
+# --------------------------------------------------------------------------
+# PersistentVolumeClaim - Stockage persistant pour PostgreSQL
+# --------------------------------------------------------------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: cv-react
+  labels:
+    app: cv-react
+    component: postgres
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: local-path  # StorageClass par défaut de k3s
+
+---
+# --------------------------------------------------------------------------
+# StatefulSet - PostgreSQL
+# --------------------------------------------------------------------------
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: cv-react
+  labels:
+    app: cv-react
+    component: postgres
+spec:
+  serviceName: postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cv-react
+      component: postgres
+  template:
+    metadata:
+      labels:
+        app: cv-react
+        component: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            # Variables depuis ConfigMap
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: cv-react-config
+                  key: DB_NAME
+            # Variables depuis Secret
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: cv-react-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cv-react-secrets
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+            - name: init-scripts
+              mountPath: /docker-entrypoint-initdb.d
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - $(POSTGRES_USER)
+                - -d
+                - $(POSTGRES_DB)
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - $(POSTGRES_USER)
+                - -d
+                - $(POSTGRES_DB)
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+        - name: init-scripts
+          configMap:
+            name: postgres-init-scripts
+
+---
+# --------------------------------------------------------------------------
+# Service - PostgreSQL (ClusterIP interne uniquement)
+# --------------------------------------------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: cv-react
+  labels:
+    app: cv-react
+    component: postgres
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
+      name: postgres
+  selector:
+    app: cv-react
+    component: postgres

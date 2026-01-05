@@ -1,0 +1,24 @@
+---
+# ============================================================================
+# VAULT - Secrets chiffrés avec Ansible Vault
+# ============================================================================
+#
+# Ce fichier contient les secrets sensibles.
+# En production, chiffrer avec: ansible-vault encrypt vault.yml
+#
+# Pour éditer: ansible-vault edit vault.yml
+# Pour voir: ansible-vault view vault.yml
+#
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# Credentials Base de données
+# --------------------------------------------------------------------------
+db_password: "Guigan7132630*"
+
+# --------------------------------------------------------------------------
+# Secrets Kubernetes (base64)
+# --------------------------------------------------------------------------
+# Pour encoder: echo -n "valeur" | base64
+k8s_db_user_b64: "R3VpbGxhdW1l"  # Guillaume
+k8s_db_password_b64: "R3VpZ2FuNzEzMjYzMCo="  

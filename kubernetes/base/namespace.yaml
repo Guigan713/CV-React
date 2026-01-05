@@ -1,0 +1,13 @@
+# ============================================================================
+# NAMESPACE - cv-react
+# ============================================================================
+# Isole toutes les ressources de l'application dans un namespace dédié
+# ============================================================================
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cv-react
+  labels:
+    app: cv-react
+    environment: production

@@ -1,0 +1,22 @@
+# ============================================================================
+# CONFIGMAP - Configuration de l'application
+# ============================================================================
+# Variables de configuration non-sensibles
+# ============================================================================
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cv-react-config
+  namespace: cv-react
+  labels:
+    app: cv-react
+data:
+  # Base de données
+  DB_HOST: "postgres"
+  DB_PORT: "5432"
+  DB_NAME: "cv_db"
+  
+  # Backend
+  NODE_ENV: "production"
+  API_PORT: "5000"

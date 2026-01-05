@@ -1,0 +1,163 @@
+---
+# ============================================================================
+# ROLE SYSTEM_SETUP - Configuration système de base pour cluster K3s
+# ============================================================================
+# 
+# Ce role configure :
+# - Mise à jour des paquets système
+# - Installation des paquets communs
+# - Configuration du firewall UFW
+# - Configuration SSH et utilisateur sudo
+#
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# SECTION 1 : Mise à jour système
+# --------------------------------------------------------------------------
+
+- name: Gather facts manually with timeout
+  setup:
+    gather_timeout: 30
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: yes
+
+- name: Upgrade all packages
+  apt:
+    upgrade: dist
+    autoremove: yes
+    autoclean: yes
+  become: yes
+
+# --------------------------------------------------------------------------
+# SECTION 2 : Installation des paquets communs
+# --------------------------------------------------------------------------
+
+- name: Install common packages
+  apt:
+    name: "{{ common_packages }}"
+    state: present
+  become: yes
+
+- name: Display server information
+  debug:
+    msg: "Server {{ inventory_hostname }} ready at {{ ansible_host }} - Groups: {{ group_names }}"
+
+# --------------------------------------------------------------------------
+# SECTION 3 : Configuration du Firewall UFW
+# --------------------------------------------------------------------------
+
+- name: Configure UFW firewall for K3s Master
+  ufw:
+    rule: "{{ item.rule }}"
+    port: "{{ item.port }}"
+    proto: "{{ item.proto | default('tcp') }}"
+    src: "{{ item.src | default(omit) }}"
+    comment: "{{ item.comment }}"
+  loop: "{{ k3s_master_ports }}"
+  become: yes
+  when: "'masters' in group_names"
+
+- name: Configure UFW firewall for K3s Worker
+  ufw:
+    rule: "{{ item.rule }}"
+    port: "{{ item.port }}"
+    proto: "{{ item.proto | default('tcp') }}"
+    src: "{{ item.src | default(omit) }}"
+    comment: "{{ item.comment }}"
+  loop: "{{ k3s_worker_ports }}"
+  become: yes
+  when: "'workers' in group_names"
+
+- name: Configure UFW firewall for Bastion
+  ufw:
+    rule: "{{ item.rule }}"
+    port: "{{ item.port }}"
+    proto: "{{ item.proto | default('tcp') }}"
+    comment: "{{ item.comment }}"
+  loop: "{{ bastion_ports }}"
+  become: yes
+  when: "'bastion' in group_names"
+
+- name: Enable UFW with default deny policy
+  ufw:
+    state: enabled
+    policy: deny
+  become: yes
+
+# --------------------------------------------------------------------------
+# SECTION 4 : Configuration SSH
+# --------------------------------------------------------------------------
+
+- name: Ensure SSH service is installed
+  apt:
+    name: openssh-server
+    state: present
+  become: yes
+
+- name: Ensure SSH service is running
+  systemd:
+    name: ssh
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Configure SSH - Enable PubkeyAuthentication
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PubkeyAuthentication'
+    line: 'PubkeyAuthentication yes'
+    state: present
+  become: yes
+  notify: Restart SSH
+
+- name: Configure SSH - Password Authentication
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PasswordAuthentication'
+    line: "PasswordAuthentication {{ 'yes' if ssh_allow_password else 'no' }}"
+    state: present
+  become: yes
+  notify: Restart SSH
+
+# --------------------------------------------------------------------------
+# SECTION 5 : Configuration utilisateur SSH
+# --------------------------------------------------------------------------
+
+- name: Ensure SSH user exists
+  user:
+    name: "{{ ssh_user }}"
+    state: present
+    shell: /bin/bash
+    create_home: yes
+    groups: sudo
+    append: yes
+  become: yes
+
+- name: Configure SSH directory for user
+  file:
+    path: "/home/{{ ssh_user }}/.ssh"
+    state: directory
+    owner: "{{ ssh_user }}"
+    group: "{{ ssh_user }}"
+    mode: '0700'
+  become: yes
+
+- name: Deploy SSH public key
+  authorized_key:
+    user: "{{ ssh_user }}"
+    key: "{{ ssh_public_key }}"
+    state: present
+  become: yes
+  when: ssh_public_key is defined
+
+- name: Configure passwordless sudo for user
+  copy:
+    content: '{{ ssh_user }} ALL=(ALL) NOPASSWD:ALL'
+    dest: "/etc/sudoers.d/{{ ssh_user }}"
+    mode: '0440'
+    validate: 'visudo -cf %s'
+  become: yes
